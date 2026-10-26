@@ -1,8 +1,12 @@
 """Convierte las trayectorias del dominio en datos para el sitio.
 
-El sitio no recalcula nada de las lecciones ni de la simulación: muestra lo
-que el dominio en Python proyectó para cada t. Así la verdad vive en un solo
-lugar y está cubierta por las pruebas.
+El sitio no recalcula las lecciones, la simulación ni las trayectorias de las
+metodologías: muestra lo que el dominio en Python proyectó para cada t. Así
+la verdad vive en un solo lugar y está cubierta por las pruebas.
+
+La única excepción es la combinación de metodologías que elige cada persona:
+el sitio la calcula con un port del modelo en TypeScript, y los "vectores"
+exportados aquí garantizan que ambos den el mismo resultado.
 """
 
 from __future__ import annotations
@@ -16,10 +20,23 @@ from criterio.aprendiz.modelo import PUNTOS, RACHA_MAESTRIA, UMBRAL_COMPETENCIA,
 from criterio.catalogo import LECCIONES, Leccion
 from criterio.codigo import ESTRATEGIAS, simular
 from criterio.decisiones import FotoDecision
+from criterio.metodologias import EFECTOS, METODOLOGIAS, Evidencia, Familia, Medicion, Metodologia, combinar
+from criterio.metodologias.conocimiento import CONFIANZA_INICIAL, ESTABILIDAD_INICIAL
 from criterio.tiempo import Fase
 
 T_FINAL = 5
 PASOS_SIMULACION = 8
+HORIZONTE = range(-3, 31)
+DESTINO = Path("web/src/data/criterio.json")
+
+# Combinaciones con las que se verifica que el port en TypeScript coincide.
+VECTORES = (
+    ("relectura",),
+    ("espaciada", "feynman"),
+    ("fracaso-productivo", "intercalado", "adr"),
+    ("ejemplos-resueltos", "recuperacion", "pareja"),
+    tuple(m.id for m in METODOLOGIAS),
+)
 
 
 def _foto_decision(foto: FotoDecision) -> dict[str, Any]:
@@ -101,16 +118,89 @@ def _reglas_aprendiz() -> dict[str, Any]:
     }
 
 
+def _medicion(m: Medicion, decimales: int | None = 2) -> dict[str, Any]:
+    redondear = (lambda v: round(v, decimales)) if decimales is not None else (lambda v: v)
+    return {
+        "t": m.t,
+        "fase": m.fase.value,
+        "retencion": redondear(m.retencion),
+        "comprension": redondear(m.comprension),
+        "transferencia": redondear(m.transferencia),
+        "criterio": redondear(m.criterio),
+        "confianza": redondear(m.confianza),
+        "minutos": m.minutos,
+    }
+
+
+def _metodo(m: Metodologia) -> dict[str, Any]:
+    conocimiento = m.vivir()
+    return {
+        "id": m.id,
+        "nombre": m.nombre,
+        "familia": m.familia.value,
+        "resumen": m.resumen,
+        "idea": m.idea,
+        "evidencia": m.evidencia.value,
+        "fuente": m.fuente,
+        "para_quien": m.para_quien,
+        "plan": [{"t": p.t, "actividad": p.actividad.value, "que_haces": p.que_haces} for p in m.plan],
+        "esta_semana": list(m.esta_semana),
+        "cuando_no": m.cuando_no,
+        "senal": m.senal,
+        "ejemplo": m.ejemplo,
+        "minutos": m.minutos,
+        "trayectoria": [_medicion(conocimiento.medir(t)) for t in HORIZONTE],
+    }
+
+
+def _metodologias() -> dict[str, Any]:
+    return {
+        "constantes": {"estabilidad_inicial": ESTABILIDAD_INICIAL, "confianza_inicial": CONFIANZA_INICIAL},
+        "actividades": {
+            a.value: {
+                "nombre": e.nombre,
+                "fase": e.fase.value,
+                "minutos": e.minutos,
+                "por_que": e.por_que,
+                "preparacion": e.preparacion,
+                "estabilidad": e.estabilidad,
+                "dificultad": e.dificultad,
+                "comprension": e.comprension,
+                "transferencia": e.transferencia,
+                "criterio": e.criterio,
+                "confianza": e.confianza,
+            }
+            for a, e in EFECTOS.items()
+        },
+        "evidencias": {e.value: e.descripcion for e in Evidencia},
+        "familias": [f.value for f in Familia],
+        "metodos": [_metodo(m) for m in METODOLOGIAS],
+        "vectores": [
+            {
+                "ids": list(ids),
+                "plan": [{"t": p.t, "actividad": p.actividad.value} for p in combinar(ids).plan],
+                "mediciones": [_medicion(combinar(ids).vivir().medir(t), decimales=None) for t in (-1, 0, 1, 5, 12, 30)],
+            }
+            for ids in VECTORES
+        ],
+    }
+
+
 def exportar() -> dict[str, Any]:
     return {
         "fases": [{"signo": f.value, "nombre": f.nombre_legible, "pregunta": f.pregunta} for f in Fase],
+        "metodologias": _metodologias(),
         "lecciones": [_leccion(l) for l in LECCIONES],
         "simulacion": _simulacion(),
         "aprendiz": _reglas_aprendiz(),
     }
 
 
-def exportar_a_archivo(destino: Path) -> Path:
+def serializar() -> str:
+    return json.dumps(exportar(), ensure_ascii=False, separators=(",", ":")) + "\n"
+
+
+def exportar_a_archivo(destino: Path = DESTINO) -> Path:
     destino.parent.mkdir(parents=True, exist_ok=True)
-    destino.write_text(json.dumps(exportar(), ensure_ascii=False, indent=1), encoding="utf-8")
+    destino.write_text(serializar(), encoding="utf-8")
     return destino

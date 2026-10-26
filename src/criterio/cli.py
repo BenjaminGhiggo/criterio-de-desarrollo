@@ -1,9 +1,12 @@
 """Aprender desde la terminal.
 
+    criterio metodos
+    criterio metodo espaciada --t 7
+    criterio combinar espaciada feynman premortem
     criterio lecciones
     criterio leccion value-object --camino float --t 4
     criterio simular sin-pruebas
-    criterio exportar site/data.json
+    criterio exportar
 """
 
 from __future__ import annotations
@@ -14,8 +17,42 @@ from pathlib import Path
 
 from criterio.catalogo import LECCIONES, buscar
 from criterio.codigo import ESTRATEGIAS, simular
-from criterio.tiempo import ErrorDeDominio
-from criterio.web import exportar_a_archivo
+from criterio.metodologias import EFECTOS, METODOLOGIAS, Metodologia, combinar
+from criterio.metodologias import buscar as buscar_metodo
+from criterio.tiempo import ErrorDeDominio, Instante
+from criterio.web import DESTINO, exportar_a_archivo
+
+
+def _metodos(_: argparse.Namespace) -> None:
+    for m in METODOLOGIAS:
+        final = m.vivir().medir(30)
+        print(f"{m.id:<22} {m.familia.value:<12} evidencia {m.evidencia.value:<21} dominio a t=30: {final.dominio:5.1f}")
+
+
+def _mostrar_metodo(m: Metodologia, t: int) -> None:
+    conocimiento = m.vivir()
+    medicion = conocimiento.medir(t)
+    print(f"\n{m.nombre}  [{m.familia.value} · evidencia {m.evidencia.value}]")
+    if m.idea:
+        print(f"{m.idea}\n")
+    print("Plan en el tiempo:")
+    for p in sorted(m.plan, key=lambda p: p.t):
+        marca = ">" if p.t <= t else " "
+        print(f" {marca} {str(Instante(p.t)):>5}  {EFECTOS[p.actividad].nombre:<22} {p.que_haces}")
+    print(f"\nDónde está tu conocimiento en {Instante(t)} ({medicion.fase.nombre_legible}):")
+    for nombre in ("retencion", "comprension", "transferencia", "criterio", "confianza"):
+        valor = getattr(medicion, nombre)
+        print(f"  {nombre:<14} {valor:5.1f}  {'#' * round(valor / 4)}")
+    print(f"  {'brecha':<14} {medicion.brecha:+5.1f}  (confianza menos retención)")
+    print(f"  {'tiempo':<14} {medicion.minutos:>5} min")
+
+
+def _metodo(args: argparse.Namespace) -> None:
+    _mostrar_metodo(buscar_metodo(args.id), args.t)
+
+
+def _combinar(args: argparse.Namespace) -> None:
+    _mostrar_metodo(combinar(args.ids), args.t)
 
 
 def _lecciones(_: argparse.Namespace) -> None:
@@ -64,6 +101,18 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="criterio", description="Criterio de desarrollo medido en el tiempo")
     sub = parser.add_subparsers(required=True)
 
+    sub.add_parser("metodos", help="Lista las metodologías de aprendizaje").set_defaults(fn=_metodos)
+
+    p = sub.add_parser("metodo", help="Vive una metodología y mide tu conocimiento en t")
+    p.add_argument("id")
+    p.add_argument("--t", type=int, default=30)
+    p.set_defaults(fn=_metodo)
+
+    p = sub.add_parser("combinar", help="Combina metodologías en tu propio plan")
+    p.add_argument("ids", nargs="+")
+    p.add_argument("--t", type=int, default=30)
+    p.set_defaults(fn=_combinar)
+
     sub.add_parser("lecciones", help="Lista las lecciones").set_defaults(fn=_lecciones)
 
     p = sub.add_parser("leccion", help="Vive una lección en un instante t")
@@ -78,7 +127,7 @@ def main(argv: list[str] | None = None) -> int:
     p.set_defaults(fn=_simular)
 
     p = sub.add_parser("exportar", help="Genera el JSON del sitio")
-    p.add_argument("destino", nargs="?", default="site/data.json")
+    p.add_argument("destino", nargs="?", default=str(DESTINO))
     p.set_defaults(fn=_exportar)
 
     args = parser.parse_args(argv)

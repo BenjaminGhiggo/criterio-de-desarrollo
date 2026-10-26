@@ -1,8 +1,0 @@
-/*
-  X-Content-Type-Options: nosniff
-  Referrer-Policy: strict-origin-when-cross-origin
-  X-Frame-Options: DENY
-/data.json
-  Cache-Control: public, max-age=300
-/llms.txt
-  Content-Type: text/plain; charset=utf-8

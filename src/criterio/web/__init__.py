@@ -1,5 +1,5 @@
 """Capa de presentación: traduce el dominio a JSON para el sitio estático."""
 
-from criterio.web.exportar import exportar, exportar_a_archivo
+from criterio.web.exportar import DESTINO, exportar, exportar_a_archivo, serializar
 
-__all__ = ["exportar", "exportar_a_archivo"]
+__all__ = ["DESTINO", "exportar", "exportar_a_archivo", "serializar"]
