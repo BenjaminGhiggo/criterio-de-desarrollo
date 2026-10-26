@@ -1,5 +1,8 @@
 """Aprender desde la terminal.
 
+    criterio ruta
+    criterio ejecutar hola-mundo
+    criterio ejecutar --archivo mi_programa.py
     criterio metodos
     criterio metodo espaciada --t 7
     criterio combinar espaciada feynman premortem
@@ -17,10 +20,18 @@ from pathlib import Path
 
 from criterio.catalogo import LECCIONES, buscar
 from criterio.codigo import ESTRATEGIAS, simular
+from criterio.ejecucion import ejecutar
+from criterio.ruta import RUTA, buscar_leccion
 from criterio.metodologias import EFECTOS, METODOLOGIAS, Metodologia, combinar
 from criterio.metodologias import buscar as buscar_metodo
 from criterio.tiempo import ErrorDeDominio, Instante
-from criterio.web import DESTINO, exportar_a_archivo
+from criterio.web import DESTINO, exportar_a_archivo, exportar_todo_ruta
+
+
+def _ruta(_: argparse.Namespace) -> None:
+    for i, l in enumerate(RUTA, 1):
+        usos = ", ".join(u.metodologia for u in l.metodologias)
+        print(f"{i:>2}. {l.id:<18} {l.titulo:<38} {usos}")
 
 
 def _metodos(_: argparse.Namespace) -> None:
@@ -95,11 +106,33 @@ def _simular(args: argparse.Namespace) -> None:
 
 def _exportar(args: argparse.Namespace) -> None:
     print(f"Escrito {exportar_a_archivo(Path(args.destino))}")
+    escritos = exportar_todo_ruta()
+    print(f"Escritos {len(escritos)} archivos de la ruta (lecciones, trazas y motor.py)")
+
+
+def _ejecutar(args: argparse.Namespace) -> None:
+    codigo = Path(args.archivo).read_text(encoding="utf-8") if args.archivo else buscar_leccion(args.leccion).codigo
+    for p in ejecutar(codigo)["pasos"]:
+        lineas = f"ejecutada {p['ejecutada']}" if p["ejecutada"] else "inicio" if p["t"] == 0 else ""
+        print(f"\nt={p['t']:+d}  {p['tipo']}  {lineas}")
+        for m in p["memoria"]["marcos"]:
+            print(f"  marco {m['nombre']}: " + ", ".join(f"{v['nombre']} -> {v['ref']}" for v in m["variables"]))
+        for e in p["explicacion"]:
+            print(f"  · {e}")
+        if p["orden"]:
+            print(f"  orden de la línea {p['siguiente']}: " + " → ".join(m["fragmento"] for m in p["orden"]))
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="criterio", description="Criterio de desarrollo medido en el tiempo")
     sub = parser.add_subparsers(required=True)
+
+    sub.add_parser("ruta", help="Lista las lecciones de la ruta, desde Hola mundo").set_defaults(fn=_ruta)
+
+    p = sub.add_parser("ejecutar", help="Ejecuta paso a paso una lección o tu archivo .py")
+    p.add_argument("leccion", nargs="?", default="hola-mundo")
+    p.add_argument("--archivo", help="Ruta a tu propio archivo .py")
+    p.set_defaults(fn=_ejecutar)
 
     sub.add_parser("metodos", help="Lista las metodologías de aprendizaje").set_defaults(fn=_metodos)
 

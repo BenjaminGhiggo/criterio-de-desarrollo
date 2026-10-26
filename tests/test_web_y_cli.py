@@ -1,8 +1,12 @@
 import json
 from pathlib import Path
 
+import pytest
+
 from criterio.cli import main
+from criterio.ruta import RUTA
 from criterio.web import DESTINO, exportar, exportar_a_archivo, serializar
+from criterio.web.ruta import DESTINO_MOTOR, DESTINO_RUTA, CARPETA_TRAZAS, fuente_motor, serializar_ruta, serializar_traza
 
 RAIZ = Path(__file__).resolve().parent.parent
 
@@ -29,6 +33,36 @@ def test_los_vectores_de_paridad_incluyen_plan_y_mediciones():
 def test_los_datos_del_sitio_estan_al_dia():
     # Si falla: ejecuta `criterio exportar` y confirma el archivo generado.
     assert (RAIZ / DESTINO).read_text(encoding="utf-8") == serializar()
+
+
+def _version_de_las_trazas() -> str:
+    return json.loads((RAIZ / DESTINO_RUTA).read_text(encoding="utf-8"))["python"]
+
+
+def test_el_motor_del_navegador_es_el_mismo_que_el_de_python():
+    assert (RAIZ / DESTINO_MOTOR).read_text(encoding="utf-8") == fuente_motor()
+
+
+def test_la_ruta_y_las_trazas_estan_al_dia():
+    import sys
+
+    version = f"{sys.version_info.major}.{sys.version_info.minor}"
+    if _version_de_las_trazas() != version:
+        pytest.skip(f"Las trazas se generaron con Python {_version_de_las_trazas()}; este es {version}")
+    assert (RAIZ / DESTINO_RUTA).read_text(encoding="utf-8") == serializar_ruta()
+    for leccion in RUTA:
+        assert (RAIZ / CARPETA_TRAZAS / f"{leccion.id}.json").read_text(encoding="utf-8") == serializar_traza(leccion)
+
+
+def test_cli_ruta_y_ejecutar(capsys, tmp_path):
+    assert main(["ruta"]) == 0
+    assert "hola-mundo" in capsys.readouterr().out
+    assert main(["ejecutar", "hola-mundo"]) == 0
+    assert "compila" in capsys.readouterr().out
+    archivo = tmp_path / "mio.py"
+    archivo.write_text("x = 1\ny = x\n", encoding="utf-8")
+    assert main(["ejecutar", "--archivo", str(archivo)]) == 0
+    assert "mismo objeto" in capsys.readouterr().out
 
 
 def test_cada_camino_cubre_desde_t_negativo_hasta_t_final():
