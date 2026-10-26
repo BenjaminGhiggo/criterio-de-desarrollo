@@ -32,8 +32,20 @@ const CONTEXTOS = [
       "Instante, Fase, LineaDeTiempo y Protagonista. Todos hablan el mismo idioma sobre t<0, t=0 y t>0.",
   },
   {
-    nombre: "metodologias",
+    nombre: "ejecucion",
+    tipo: "Motor",
+    texto:
+      "Ejecuta Python real con sys.settrace: pila de marcos, objetos con dirección, orden de evaluación y explicación de cada paso. El mismo archivo corre en el navegador con Pyodide.",
+  },
+  {
+    nombre: "ruta",
     tipo: "Contexto principal",
+    texto:
+      "16 lecciones de Hola mundo a un agregado con TDD. Una prueba verifica que cada predicción coincida con lo que Python imprime de verdad.",
+  },
+  {
+    nombre: "metodologias",
+    tipo: "Cómo se aprende",
     texto:
       "El conocimiento como protagonista. 19 metodologías como planes en el tiempo y combinar() para tu mezcla.",
   },
@@ -44,25 +56,16 @@ const CONTEXTOS = [
       "Una decisión técnica: fuerzas y opciones en t<0, elección justificada en t=0, consecuencias en t>0.",
   },
   {
-    nombre: "aprendiz",
-    tipo: "Propuesta B",
+    nombre: "aprendiz · codigo",
+    tipo: "Propuestas B y C",
     texto:
-      "Quien aprende: diagnóstico, compromiso y práctica. Acertar sin saber por qué suma poco.",
-  },
-  {
-    nombre: "codigo",
-    tipo: "Propuesta C",
-    texto: "Un módulo: pruebas primero, publicación y costo de cambio que crece con la deuda.",
-  },
-  {
-    nombre: "catalogo",
-    tipo: "Cliente de A",
-    texto: "Siete lecciones de Python y DDD que se viven por cada camino posible.",
+      "Quien aprende (acertar sin saber por qué suma poco) y un módulo cuyo costo de cambio crece con la deuda.",
   },
   {
     nombre: "web",
     tipo: "Presentación",
-    texto: "Exporta las trayectorias a JSON. Esta app no recalcula: muestra.",
+    texto:
+      "Exporta lecciones, trazas y trayectorias a JSON y copia motor.py para el navegador. La app no recalcula: muestra.",
   },
 ];
 

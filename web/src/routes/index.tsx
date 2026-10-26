@@ -1,5 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useState } from "react";
+import { MiniTraza } from "@/components/mini-traza";
 import { Reveal } from "@/components/motion";
 import { TarjetaMetodo } from "@/components/tarjeta-metodo";
 import {
@@ -28,6 +29,10 @@ import {
   type Evidencia,
   type Metodo,
 } from "@/lib/datos";
+import { LECCIONES, UNIDADES, type Traza } from "@/lib/ruta";
+import trazaReasignacion from "@/data/trazas/reasignacion.json";
+
+const TRAZA_HERO = trazaReasignacion as unknown as Traza;
 
 const URL_SITIO = "https://criterio.benjacode.com";
 
@@ -83,94 +88,6 @@ export const Route = createFileRoute("/")({
 
 // ── Hero: el protagonista en vivo ────────────────────────────────────────
 
-const RECORRIDO = ["relectura", "espaciada", "fracaso-productivo", "premortem"];
-
-function PanelEnVivo() {
-  const [indice, setIndice] = useState(0);
-  const [t, setT] = useState(T_MAX);
-  const pausado = useRef(false);
-  const metodo = metodoPorId(RECORRIDO[indice]!)!;
-
-  useEffect(() => {
-    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
-    setT(T_MIN);
-    const id = setInterval(() => {
-      if (pausado.current) return;
-      setT((actual) => {
-        if (actual < T_MAX) return actual + 1;
-        setIndice((i) => (i + 1) % RECORRIDO.length);
-        return T_MIN;
-      });
-    }, 260);
-    return () => clearInterval(id);
-  }, []);
-
-  const medicion = medicionEn(metodo, t);
-  const fase = faseDe(t);
-  return (
-    <div
-      className="relative overflow-hidden rounded-[2rem] bg-panel p-6 text-panel-foreground shadow-soft transition-transform duration-500 hover:rotate-0 sm:p-8"
-      onMouseEnter={() => (pausado.current = true)}
-      onMouseLeave={() => (pausado.current = false)}
-      onFocus={() => (pausado.current = true)}
-      onBlur={() => (pausado.current = false)}
-    >
-      <div className="live-scan" aria-hidden="true" />
-      <div className="flex items-center justify-between gap-3">
-        <Marca inversa />
-        <span className="flex items-center gap-2 rounded-full border border-panel-foreground/20 px-3 py-2 font-mono text-xs">
-          <span className="live-dot size-2 rounded-full bg-accent" />
-          PROTAGONISTA EN VIVO
-        </span>
-      </div>
-      <div className="mt-8 flex flex-wrap gap-2" role="tablist" aria-label="Metodología del panel">
-        {RECORRIDO.map((id, i) => (
-          <button
-            key={id}
-            type="button"
-            role="tab"
-            aria-selected={i === indice}
-            onClick={() => {
-              setIndice(i);
-              setT(T_MIN);
-            }}
-            className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${i === indice ? "border-accent bg-accent text-accent-foreground" : "border-panel-foreground/20 text-panel-foreground/70 hover:border-accent/60"}`}
-          >
-            {metodoPorId(id)!.nombre.split(" (")[0]}
-          </button>
-        ))}
-      </div>
-      <div className="mt-6 flex items-end justify-between gap-4">
-        <div>
-          <p className="text-xs font-bold uppercase text-panel-foreground/55">
-            Tu conocimiento de «{metodo.ejemplo}»
-          </p>
-          <p
-            className="mt-1 font-mono text-4xl font-bold tabular-nums"
-            style={{ color: COLOR_FASE[fase] }}
-          >
-            t = {signoT(t)}
-          </p>
-        </div>
-        <p className="max-w-[12rem] text-right text-sm text-panel-foreground/65">
-          {faseInfo(fase).nombre}:{" "}
-          {fase === "t<0" ? "preparación" : fase === "t=0" ? "encuentro" : "consolidación"}
-        </p>
-      </div>
-      <div className="relative mt-5 h-1.5 rounded-full bg-panel-foreground/10">
-        <div className="eje-gradiente absolute inset-0 rounded-full opacity-60" />
-        <span
-          className="marcador-vivo absolute top-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-panel bg-accent text-accent transition-[left] duration-200"
-          style={{ left: `${((t - T_MIN) / (T_MAX - T_MIN)) * 100}%` }}
-        />
-      </div>
-      <div className="mt-7">
-        <Medidores medicion={medicion} inversa />
-      </div>
-    </div>
-  );
-}
-
 function Hero() {
   return (
     <section
@@ -203,34 +120,36 @@ function Hero() {
       />
       <div className="animate-float relative z-10">
         <p className="mb-5 text-xs font-bold uppercase text-primary">
-          Python · Domain Driven Design · Test Driven Development
+          Python desde cero · Domain Driven Design · Test Driven Development
         </p>
         <h1 className="max-w-4xl font-display text-5xl font-bold leading-[1.02] sm:text-7xl lg:text-[5.2rem]">
-          No aprendas más. <span className="sheen-text">Aprende cómo aprendes.</span>
+          Programa desde Hola mundo. <span className="sheen-text">Mira qué pasa en memoria.</span>
         </h1>
         <p className="mt-7 max-w-2xl text-lg leading-8 text-muted-foreground sm:text-xl">
-          Siempre nos preguntamos por qué hacerlo de una forma y no de otra. Aquí la respuesta
-          empieza antes: en cómo aprendes. 19 metodologías, cada una con un ejemplo de Python que
-          puedes probar ahora, medidas en el tiempo. Tú eliges las que de verdad te hacen aprender.
+          Siempre nos preguntamos por qué hacerlo de una forma y no de otra. La respuesta empieza
+          por entender qué hace Python en cada instante: qué se ejecuta primero, en qué marco vive
+          cada variable y a qué objeto apunta. {LECCIONES.length} lecciones, de una línea a un
+          agregado con pruebas, cada una trabajada con metodologías de aprendizaje que tú eliges.
         </p>
         <div className="mt-9 flex flex-wrap gap-3">
-          <a
-            href="#metodologias"
+          <Link
+            to="/aprende/$id"
+            params={{ id: "hola-mundo" }}
             className="inline-flex h-12 items-center rounded-full bg-primary px-6 font-display font-semibold text-primary-foreground shadow-glow transition-transform hover:-translate-y-0.5"
           >
-            Explorar las 19 metodologías
-          </a>
+            Empezar: Hola mundo
+          </Link>
           <Link
-            to="/mi-metodologia"
+            to="/aprende"
             className="inline-flex h-12 items-center rounded-full border bg-card px-6 font-display font-semibold hover:border-primary/40 hover:text-primary"
           >
-            Armar mi metodología
+            Ver la ruta completa
           </Link>
         </div>
         <dl className="mt-12 grid max-w-xl grid-cols-3 gap-4 border-t pt-6">
           {[
+            [String(LECCIONES.length), "lecciones de código"],
             [String(METODOS.length), "metodologías"],
-            [String(METODOS.filter((m) => m.evidencia === "alta").length), "con evidencia alta"],
             ["3", "fases del tiempo"],
           ].map(([valor, texto]) => (
             <div key={texto}>
@@ -244,9 +163,95 @@ function Hero() {
       <div className="relative mx-auto w-full max-w-2xl py-6">
         <div className="absolute inset-6 rotate-3 rounded-[3rem] bg-primary/10" />
         <div className="relative">
-          <PanelEnVivo />
+          <MiniTraza traza={TRAZA_HERO} />
         </div>
       </div>
+    </section>
+  );
+}
+
+// ── La ruta ──────────────────────────────────────────────────────────────
+
+function Ruta() {
+  return (
+    <section
+      aria-labelledby="ruta-titulo"
+      className="mx-auto max-w-[1560px] px-5 py-20 sm:px-8 sm:py-24"
+    >
+      <Encabezamiento
+        id="ruta-titulo"
+        ceja="La ruta"
+        titulo="De una línea a un agregado, sin saltarse lo que pasa en memoria."
+      >
+        Cada lección: predices antes de ejecutar (t&lt;0), ejecutas paso a paso viendo la pila y el
+        montón (t≥0), y después repasas sin mirar y lo explicas. Las metodologías no se leen: se
+        usan en cada lección.
+      </Encabezamiento>
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {UNIDADES.map((unidad, u) => (
+          <div
+            key={unidad}
+            className="animate-float rounded-2xl border bg-card p-6 shadow-card"
+            style={{ animationDelay: `${u * 60}ms` }}
+          >
+            <p className="font-mono text-xs font-bold text-primary">Unidad {u + 1}</p>
+            <h3 className="mt-1 font-display text-xl font-bold">{unidad}</h3>
+            <ol className="mt-4 space-y-2">
+              {LECCIONES.filter((l) => l.unidad === unidad).map((l) => (
+                <li key={l.id}>
+                  <Link
+                    to="/aprende/$id"
+                    params={{ id: l.id }}
+                    className="grid grid-cols-[32px_1fr] items-center gap-3 rounded-2xl px-2 py-2 hover:bg-primary/5"
+                  >
+                    <span className="grid size-8 place-items-center rounded-full bg-primary/10 font-mono text-xs font-bold text-primary">
+                      {l.orden}
+                    </span>
+                    <span>
+                      <span className="block font-semibold leading-tight">{l.titulo}</span>
+                      <span className="block text-xs text-muted-foreground">{l.concepto}</span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ── Metodologías: adelanto ──────────────────────────────────────────────
+
+function Adelanto() {
+  const destacadas = [...METODOS]
+    .sort((a, b) => ORDEN_EVIDENCIA.indexOf(a.evidencia) - ORDEN_EVIDENCIA.indexOf(b.evidencia))
+    .slice(0, 6);
+  return (
+    <section
+      aria-labelledby="adelanto-titulo"
+      className="mx-auto max-w-[1560px] px-5 py-20 sm:px-8 sm:py-24"
+    >
+      <Encabezamiento
+        id="adelanto-titulo"
+        ceja={`${METODOS.length} metodologías`}
+        titulo="Cómo aprendes también se elige."
+      >
+        Cada lección usa dos o tres metodologías. Aquí están todas, con su evidencia, un ejemplo
+        para probar y una valoración tuya. Empieza por las de evidencia alta.
+      </Encabezamiento>
+      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        {destacadas.map((m) => (
+          <TarjetaMetodo key={m.id} metodo={m} />
+        ))}
+      </div>
+      <Link
+        to="/metodologias"
+        className="mt-8 inline-flex h-12 items-center rounded-full border bg-card px-6 font-display font-semibold hover:border-primary/40 hover:text-primary"
+      >
+        Ver las {METODOS.length} metodologías
+      </Link>
     </section>
   );
 }
@@ -320,96 +325,6 @@ function Marco() {
 }
 
 // ── Las metodologías ─────────────────────────────────────────────────────
-
-type Orden = "evidencia" | "dominio" | "minutos";
-
-function Metodologias() {
-  const [familia, setFamilia] = useState<string>("Todas");
-  const [evidencia, setEvidencia] = useState<Evidencia | "todas">("todas");
-  const [orden, setOrden] = useState<Orden>("evidencia");
-  const visibles = useMemo(() => {
-    const lista = METODOS.filter(
-      (m) =>
-        (familia === "Todas" || m.familia === familia) &&
-        (evidencia === "todas" || m.evidencia === evidencia),
-    );
-    const clave = (m: Metodo) =>
-      orden === "evidencia"
-        ? ORDEN_EVIDENCIA.indexOf(m.evidencia) * 1000 - dominio(medicionEn(m, T_MAX))
-        : orden === "dominio"
-          ? -dominio(medicionEn(m, T_MAX))
-          : m.minutos;
-    return [...lista].sort((a, b) => clave(a) - clave(b));
-  }, [familia, evidencia, orden]);
-  return (
-    <section
-      id="metodologias"
-      aria-labelledby="metodos-titulo"
-      className="mx-auto max-w-[1560px] scroll-mt-6 px-5 py-20 sm:px-8 sm:py-24"
-    >
-      <Encabezamiento
-        id="metodos-titulo"
-        ceja={`${METODOS.length} propuestas`}
-        titulo="Metodologías para elegir, no para creer."
-      >
-        Cada tarjeta muestra su plan en el tiempo (turquesa antes, ámbar el encuentro, violeta
-        después), su evidencia y cuánto desarrolla tu conocimiento en 30 días según el modelo.
-        Entra, prueba el ejemplo y valóralo.
-      </Encabezamiento>
-      <div className="mb-8 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Filtrar por familia">
-          {["Todas", ...FAMILIAS].map((f) => (
-            <button
-              key={f}
-              type="button"
-              aria-pressed={familia === f}
-              onClick={() => setFamilia(f)}
-              className={`h-10 rounded-full px-4 text-sm font-semibold transition-colors ${familia === f ? "bg-primary text-primary-foreground shadow-glow" : "border bg-card text-muted-foreground hover:text-primary"}`}
-            >
-              {f}
-            </button>
-          ))}
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <select
-            aria-label="Filtrar por evidencia"
-            value={evidencia}
-            onChange={(e) => setEvidencia(e.target.value as Evidencia | "todas")}
-            className="h-10 rounded-full border bg-card px-4 text-sm font-semibold"
-          >
-            <option value="todas">Toda evidencia</option>
-            {ORDEN_EVIDENCIA.map((e) => (
-              <option key={e} value={e}>
-                Evidencia {e}
-              </option>
-            ))}
-          </select>
-          <select
-            aria-label="Ordenar"
-            value={orden}
-            onChange={(e) => setOrden(e.target.value as Orden)}
-            className="h-10 rounded-full border bg-card px-4 text-sm font-semibold"
-          >
-            <option value="evidencia">Ordenar por evidencia</option>
-            <option value="dominio">Ordenar por dominio a t=+30</option>
-            <option value="minutos">Ordenar por menos tiempo</option>
-          </select>
-        </div>
-      </div>
-      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-        {visibles.map((m, i) => (
-          <div
-            key={m.id}
-            className="animate-float"
-            style={{ animationDelay: `${Math.min(i, 8) * 45}ms` }}
-          >
-            <TarjetaMetodo metodo={m} />
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
 
 // ── La trampa de la sensación ────────────────────────────────────────────
 
@@ -507,13 +422,13 @@ function Llamado() {
           <div>
             <p className="text-xs font-bold uppercase text-accent">Cómo usar esta página</p>
             <h2 className="mt-3 font-display text-4xl font-bold leading-tight sm:text-5xl">
-              Prueba. Valora. Elige. Combina.
+              Programa. Observa. Valora. Elige.
             </h2>
             <ol className="mt-6 grid gap-4 sm:grid-cols-2">
               {[
-                "Entra a una metodología y haz su ejemplo de Python.",
-                "Responde con honestidad si te hizo aprender.",
-                "Marca las que eliges y compara sus trayectorias.",
+                "Empieza la ruta en Hola mundo y avanza lección por lección.",
+                "En cada lección predices, ejecutas paso a paso y repasas sin mirar.",
+                "Valora las metodologías que usaste: ¿te hicieron aprender?",
                 "Tu metodología es la combinación: un plan para t<0, t=0 y t>0.",
               ].map((paso, i) => (
                 <li key={paso} className="flex gap-3">
@@ -547,8 +462,9 @@ function Inicio() {
   return (
     <main>
       <Hero />
+      <Ruta />
       <Marco />
-      <Metodologias />
+      <Adelanto />
       <Trampa />
       <Llamado />
     </main>

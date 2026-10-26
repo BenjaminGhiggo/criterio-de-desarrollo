@@ -9,11 +9,14 @@ npm run typecheck
 npm run build     # genera sitemap/llms.txt y prerenderiza en dist/client
 ```
 
-Los datos (`src/data/criterio.json`) los genera el dominio en Python con `criterio exportar` desde la raíz del repositorio. No se editan a mano.
+Los datos (`src/data/criterio.json`, `src/data/ruta.json`, `src/data/trazas/*.json`) y `public/motor.py` los genera el dominio en Python con `criterio exportar` desde la raíz del repositorio. No se editan a mano. El editor de cada lección descarga Pyodide (Python 3.14) desde jsDelivr solo cuando alguien pide ejecutar su propio código.
 
 | Ruta | Contenido |
 |---|---|
-| `/` | Hero con el protagonista en vivo, el marco t<0 / t=0 / t>0, las 19 metodologías filtrables y la trampa de la sensación de aprender |
+| `/` | Python ejecutándose en vivo, la ruta por unidades, el marco t<0 / t=0 / t>0, metodologías destacadas y la trampa de la sensación de aprender |
+| `/aprende` | Las 16 lecciones por unidad, con tu avance |
+| `/aprende/$id` | Predicción (t<0), visualizador paso a paso con pila, montón y orden de evaluación, editor con Pyodide, repaso, explicación y dominio |
+| `/metodologias` | Las 19 metodologías filtrables por familia y evidencia |
 | `/metodos/$id` | Idea, evidencia y fuente, plan en el tiempo, trayectoria frente al control, ejemplo interactivo, cómo aplicarla esta semana y tu valoración |
 | `/comparar` | Curvas superpuestas, dispersión dominio/tiempo y tabla ordenable |
 | `/mi-metodologia` | La combinación de las que elegiste, calculada con `src/domain/conocimiento.ts`, exportable a Markdown |

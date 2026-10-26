@@ -47,6 +47,10 @@ class TestHolaMundo:
         orden = [m["fragmento"] for m in paso(r, 0)["orden"]]
         assert orden.index("print") < orden.index('"Hola, mundo"') < orden.index('print("Hola, mundo")')
 
+    def test_al_terminar_no_aparecen_objetos_que_nadie_usa(self):
+        final = ultimo(ejecutar('print("Hola, mundo")'))
+        assert final["memoria"]["objetos"] == []
+
     def test_la_salida_aparece_despues_de_ejecutar_la_linea(self):
         r = ejecutar('print("Hola, mundo")')
         assert ultimo(r)["salida"] == "Hola, mundo\n"

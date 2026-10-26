@@ -22,6 +22,7 @@ import {
   type Dimension,
 } from "@/lib/datos";
 import { usePreferencias } from "@/lib/preferencias";
+import { leccionesQueUsan } from "@/lib/ruta";
 
 const URL_SITIO = "https://criterio.benjacode.com";
 
@@ -126,7 +127,7 @@ function PaginaMetodo() {
         />
         <div className="animate-float relative z-10">
           <nav aria-label="Ruta" className="mb-6 text-sm text-muted-foreground">
-            <Link to="/" hash="metodologias" className="hover:text-primary">
+            <Link to="/metodologias" className="hover:text-primary">
               Metodologías
             </Link>
             <span className="mx-2">/</span>
@@ -236,6 +237,36 @@ function PaginaMetodo() {
           </div>
         </div>
       </section>
+
+      {leccionesQueUsan(metodo.id).length > 0 && (
+        <section aria-labelledby="en-la-ruta" className="mx-auto max-w-[1560px] px-5 pt-16 sm:px-8">
+          <p className="mb-3 text-xs font-bold uppercase text-primary">Se aplica en la ruta</p>
+          <h2
+            id="en-la-ruta"
+            className="max-w-3xl font-display text-3xl font-bold leading-tight sm:text-4xl"
+          >
+            Úsala programando, no solo leyendo
+          </h2>
+          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {leccionesQueUsan(metodo.id).map((l) => (
+              <Link
+                key={l.id}
+                to="/aprende/$id"
+                params={{ id: l.id }}
+                className="rounded-2xl border bg-card p-5 shadow-card transition-colors hover:border-primary/40"
+              >
+                <p className="font-mono text-xs font-bold text-primary">
+                  Lección {l.orden} · {l.unidad}
+                </p>
+                <p className="mt-1 font-display text-lg font-bold">{l.titulo}</p>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  {l.metodologias.find((u) => u.metodologia === metodo.id)?.como}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section
         id="probar"

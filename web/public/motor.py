@@ -393,7 +393,8 @@ def trazar(codigo: str, max_pasos: int = MAX_PASOS) -> dict:
         if evento == "line":
             datos["orden"] = _orden(sentencias.get(frame.f_lineno), frame, codigo)
         elif evento == "return":
-            extra = (arg,)
+            if frame.f_code.co_name != "<module>":  # el "retorno" del programa no es un valor de nadie
+                extra = (arg,)
             datos["retorno"] = dirs.de(arg)
         elif evento == "exception":
             extra = (arg[1],)

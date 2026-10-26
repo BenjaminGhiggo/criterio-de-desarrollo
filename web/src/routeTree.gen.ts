@@ -13,7 +13,10 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as R404RouteImport } from './routes/404'
 import { Route as CompararRouteImport } from './routes/comparar'
 import { Route as FundamentosRouteImport } from './routes/fundamentos'
+import { Route as MetodologiasRouteImport } from './routes/metodologias'
 import { Route as MiMetodologiaRouteImport } from './routes/mi-metodologia'
+import { Route as AprendeIndexRouteImport } from './routes/aprende.index'
+import { Route as AprendeIdRouteImport } from './routes/aprende.$id'
 import { Route as MetodosIdRouteImport } from './routes/metodos.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -36,9 +39,24 @@ const FundamentosRoute = FundamentosRouteImport.update({
   path: '/fundamentos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MetodologiasRoute = MetodologiasRouteImport.update({
+  id: '/metodologias',
+  path: '/metodologias',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MiMetodologiaRoute = MiMetodologiaRouteImport.update({
   id: '/mi-metodologia',
   path: '/mi-metodologia',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AprendeIndexRoute = AprendeIndexRouteImport.update({
+  id: '/aprende/',
+  path: '/aprende/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AprendeIdRoute = AprendeIdRouteImport.update({
+  id: '/aprende/$id',
+  path: '/aprende/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MetodosIdRoute = MetodosIdRouteImport.update({
@@ -52,16 +70,22 @@ export interface FileRoutesByFullPath {
   '/404': typeof R404Route
   '/comparar': typeof CompararRoute
   '/fundamentos': typeof FundamentosRoute
+  '/metodologias': typeof MetodologiasRoute
   '/mi-metodologia': typeof MiMetodologiaRoute
+  '/aprende/$id': typeof AprendeIdRoute
   '/metodos/$id': typeof MetodosIdRoute
+  '/aprende/': typeof AprendeIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/404': typeof R404Route
   '/comparar': typeof CompararRoute
   '/fundamentos': typeof FundamentosRoute
+  '/metodologias': typeof MetodologiasRoute
   '/mi-metodologia': typeof MiMetodologiaRoute
+  '/aprende/$id': typeof AprendeIdRoute
   '/metodos/$id': typeof MetodosIdRoute
+  '/aprende': typeof AprendeIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -69,8 +93,11 @@ export interface FileRoutesById {
   '/404': typeof R404Route
   '/comparar': typeof CompararRoute
   '/fundamentos': typeof FundamentosRoute
+  '/metodologias': typeof MetodologiasRoute
   '/mi-metodologia': typeof MiMetodologiaRoute
+  '/aprende/$id': typeof AprendeIdRoute
   '/metodos/$id': typeof MetodosIdRoute
+  '/aprende/': typeof AprendeIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -79,24 +106,33 @@ export interface FileRouteTypes {
     | '/404'
     | '/comparar'
     | '/fundamentos'
+    | '/metodologias'
     | '/mi-metodologia'
+    | '/aprende/$id'
     | '/metodos/$id'
+    | '/aprende/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/404'
     | '/comparar'
     | '/fundamentos'
+    | '/metodologias'
     | '/mi-metodologia'
+    | '/aprende/$id'
     | '/metodos/$id'
+    | '/aprende'
   id:
     | '__root__'
     | '/'
     | '/404'
     | '/comparar'
     | '/fundamentos'
+    | '/metodologias'
     | '/mi-metodologia'
+    | '/aprende/$id'
     | '/metodos/$id'
+    | '/aprende/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -104,8 +140,11 @@ export interface RootRouteChildren {
   R404Route: typeof R404Route
   CompararRoute: typeof CompararRoute
   FundamentosRoute: typeof FundamentosRoute
+  MetodologiasRoute: typeof MetodologiasRoute
   MiMetodologiaRoute: typeof MiMetodologiaRoute
+  AprendeIdRoute: typeof AprendeIdRoute
   MetodosIdRoute: typeof MetodosIdRoute
+  AprendeIndexRoute: typeof AprendeIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -138,11 +177,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FundamentosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/metodologias': {
+      id: '/metodologias'
+      path: '/metodologias'
+      fullPath: '/metodologias'
+      preLoaderRoute: typeof MetodologiasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mi-metodologia': {
       id: '/mi-metodologia'
       path: '/mi-metodologia'
       fullPath: '/mi-metodologia'
       preLoaderRoute: typeof MiMetodologiaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aprende/': {
+      id: '/aprende/'
+      path: '/aprende'
+      fullPath: '/aprende/'
+      preLoaderRoute: typeof AprendeIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aprende/$id': {
+      id: '/aprende/$id'
+      path: '/aprende/$id'
+      fullPath: '/aprende/$id'
+      preLoaderRoute: typeof AprendeIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/metodos/$id': {
@@ -160,8 +220,11 @@ const rootRouteChildren: RootRouteChildren = {
   R404Route: R404Route,
   CompararRoute: CompararRoute,
   FundamentosRoute: FundamentosRoute,
+  MetodologiasRoute: MetodologiasRoute,
   MiMetodologiaRoute: MiMetodologiaRoute,
+  AprendeIdRoute: AprendeIdRoute,
   MetodosIdRoute: MetodosIdRoute,
+  AprendeIndexRoute: AprendeIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

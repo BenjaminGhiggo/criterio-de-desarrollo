@@ -33,7 +33,8 @@ export function Marca({ inversa = false }: { inversa?: boolean }) {
 }
 
 const NAVEGACION = [
-  { a: "/", texto: "Metodologías" },
+  { a: "/aprende", texto: "Ruta" },
+  { a: "/metodologias", texto: "Metodologías" },
   { a: "/comparar", texto: "Comparar" },
   { a: "/mi-metodologia", texto: "Mi metodología" },
   { a: "/fundamentos", texto: "Fundamentos" },
@@ -65,7 +66,6 @@ export function Encabezado() {
             key={a}
             to={a}
             onClick={() => setAbierto(false)}
-            activeOptions={{ exact: true }}
             activeProps={{ className: "text-primary bg-primary/5" }}
             inactiveProps={{ className: "text-muted-foreground" }}
             className="rounded-full px-4 py-3 text-base font-semibold hover:bg-primary/5 hover:text-primary md:py-2"
