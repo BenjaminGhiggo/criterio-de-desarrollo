@@ -22,7 +22,7 @@ VALUE_OBJECT = Leccion(
     ),
     fuerzas=(
         Fuerza("rapidez", "Hay que entregar esta semana"),
-        Fuerza("precision", "Un centavo perdido es un reclamo y una auditoría"),
+        Fuerza("precisión", "Un centavo perdido es un reclamo y una auditoría"),
         Fuerza("invariantes", "No se pueden sumar soles con dólares"),
         Fuerza("lenguaje", "El negocio habla de 'Monto', no de 'float'"),
     ),
@@ -70,7 +70,7 @@ VALUE_OBJECT = Leccion(
         ),
     ),
     recomendada="value-object",
-    justificacion=("precision", "invariantes", "lenguaje"),
+    justificacion=("precisión", "invariantes", "lenguaje"),
     explicacion=(
         "Un Value Object se define por su valor, no por su identidad, y es "
         "inmutable. Al encerrar las reglas (misma moneda, Decimal) en un solo "
@@ -90,7 +90,7 @@ TEST_PRIMERO = Leccion(
     ),
     fuerzas=(
         Fuerza("rapidez", "Escribir pruebas parece duplicar el trabajo"),
-        Fuerza("diseno", "Escribir el uso antes revela la interfaz correcta"),
+        Fuerza("diseño", "Escribir el uso antes revela la interfaz correcta"),
         Fuerza("cambio", "La regla va a cambiar cada mes"),
         Fuerza("confianza", "Refactorizar requiere red de seguridad"),
     ),
@@ -135,7 +135,7 @@ TEST_PRIMERO = Leccion(
         ),
     ),
     recomendada="primero",
-    justificacion=("diseno", "cambio", "confianza"),
+    justificacion=("diseño", "cambio", "confianza"),
     explicacion=(
         "En TDD la prueba existe en t<0 respecto del código: escribirla primero "
         "obliga a diseñar desde el uso. Rojo (falla), Verde (código mínimo), "
@@ -206,7 +206,7 @@ COMPOSICION = Leccion(
     ),
     fuerzas=(
         Fuerza("reutilizar", "La herencia reutiliza código del padre de inmediato"),
-        Fuerza("combinacion", "Las combinaciones crecen: email+SMS, SMS+WhatsApp..."),
+        Fuerza("combinación", "Las combinaciones crecen: email+SMS, SMS+WhatsApp..."),
         Fuerza("acoplamiento", "Cambiar al padre no debe romper a los hijos"),
     ),
     opciones=(
@@ -238,7 +238,7 @@ COMPOSICION = Leccion(
         ),
     ),
     recomendada="composicion",
-    justificacion=("combinacion", "acoplamiento"),
+    justificacion=("combinación", "acoplamiento"),
     explicacion=(
         "La herencia expresa 'es un'; la composición, 'tiene un'. Cuando las "
         "variaciones se combinan, la herencia multiplica clases y la "
@@ -254,7 +254,7 @@ EXCEPCION = Leccion(
     contexto="Una cuenta bancaria permite retirar si hay saldo. Si no, algo debe pasar.",
     fuerzas=(
         Fuerza("simplicidad", "Devolver None es una línea"),
-        Fuerza("explicito", "Quien llama no debe poder ignorar el fallo"),
+        Fuerza("explícito", "Quien llama no debe poder ignorar el fallo"),
         Fuerza("lenguaje", "El negocio llama a esto 'Saldo insuficiente'"),
     ),
     opciones=(
@@ -285,7 +285,7 @@ EXCEPCION = Leccion(
         ),
     ),
     recomendada="excepcion",
-    justificacion=("explicito", "lenguaje"),
+    justificacion=("explícito", "lenguaje"),
     explicacion=(
         "Un None silencioso traslada la regla a cada llamador. Una excepción "
         "del dominio no se puede ignorar sin querer, lleva el nombre del "
@@ -346,7 +346,7 @@ AGREGADO = Leccion(
     fuerzas=(
         Fuerza("familiaridad", "Los setters y servicios son lo que todos conocen"),
         Fuerza("invariantes", "La regla debe cumplirse siempre, no 'si te acuerdas'"),
-        Fuerza("cohesion", "El comportamiento debe vivir con los datos"),
+        Fuerza("cohesión", "El comportamiento debe vivir con los datos"),
     ),
     opciones=(
         Camino(
@@ -377,7 +377,7 @@ AGREGADO = Leccion(
         ),
     ),
     recomendada="agregado",
-    justificacion=("invariantes", "cohesion"),
+    justificacion=("invariantes", "cohesión"),
     explicacion=(
         "Un agregado es una frontera de consistencia: solo se modifica a "
         "través de su raíz, que garantiza las invariantes. En este proyecto, "
