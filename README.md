@@ -1,48 +1,53 @@
 # Criterio de desarrollo
 
-Sistema para aprender **por qué** se hace algo de una forma y no de otra en Python, usando **Domain Driven Design** y **Test Driven Development**, medido en el tiempo.
+Sistema para aprender **por qué** se hace algo de una forma y no de otra en Python, con **Domain Driven Design** y **Test Driven Development**. Lo central es **cómo aprendes**: 19 metodologías de aprendizaje, cada una con un ejemplo interactivo, medidas en el tiempo, para que elijas las que de verdad te hacen aprender.
 
 Sitio: <https://criterio.benjacode.com>
 
 ## La idea: un protagonista medido en el tiempo
 
-Toda decisión tiene un antes, un instante y un después. Tomamos `t = 0` como referencia:
+El protagonista es **tu conocimiento de un concepto**. Tomamos como referencia el instante en que lo encuentras:
 
-| Instante | Fase | Pregunta |
+| Instante | Fase | En el aprendizaje |
 |---|---|---|
-| `t < 0` | Antes | ¿Por qué hay que decidir? ¿Qué fuerzas y alternativas existen? |
-| `t = 0` | Decisión | ¿Qué se elige y con qué justificación? |
-| `t > 0` | Después | ¿Qué consecuencia tuvo lo elegido con el paso del tiempo? |
+| `t < 0` | Antes | Predecir, intentar y fallar, preguntarte para qué existe algo |
+| `t = 0` | Encuentro | La explicación, el ejemplo resuelto, la documentación |
+| `t > 0` | Después | Recuperar, espaciar, aplicar, enseñar, reflexionar |
 
-El **protagonista** es una raíz de agregado que no guarda su estado: guarda lo que le pasó (eventos de dominio). Su estado en cualquier `t` es la proyección de sus eventos hasta `t`, así que siempre se puede preguntar **en qué estado está y dónde está**:
+El protagonista no guarda su estado: guarda lo que le pasó. Su estado en cualquier `t` es la proyección de sus eventos hasta `t`, así que siempre se puede preguntar **en qué estado está y dónde está**:
 
 ```python
-decision.donde_esta(-1)   # Ubicacion(fase=ANTES,    estado=EN_CONTEXTO, ...)
-decision.donde_esta(0)    # Ubicacion(fase=DECISION, estado=DECIDIDA, ...)
-decision.donde_esta(5)    # Ubicacion(fase=DESPUES,  estado=VALIDADA, balance=+2, ...)
+from criterio.metodologias import buscar
+
+conocimiento = buscar("espaciada").vivir()
+conocimiento.medir(-1)   # fase ANTES: nada que recordar todavía
+conocimiento.medir(0)    # fase DECISION: retención 100
+conocimiento.medir(30)   # fase DESPUES: retención, comprensión, transferencia, criterio, confianza
 ```
 
-## Tres propuestas
+## Las metodologías
 
-Las tres comparten el núcleo de tiempo y están implementadas y probadas. El detalle y la comparación están en [`docs/propuestas.md`](docs/propuestas.md).
+Memoria (releer como control, recuperación, repetición espaciada), comprensión (fracaso productivo, ejemplos resueltos que se desvanecen, PRIMM, Feynman), práctica (intercalado, ejemplos con errores, Parsons, TDD como método de aprendizaje, kata, mastery learning), criterio (cinco porqués, pre-mortem y post-mortem, casos con protagonista, diario ADR) y con otros (enseñar con pato de goma y diálogo socrático, programación en pareja).
 
-- **A. La Decisión** (`criterio.decisiones`): fuerzas y alternativas en `t<0`, elección justificada en `t=0`, consecuencias en `t>0`.
-- **B. El Aprendiz** (`criterio.aprendiz`): diagnóstico, compromiso y práctica; el criterio sube al acertar sabiendo por qué.
-- **C. El Módulo de código** (`criterio.codigo`): pruebas primero, publicación y costo de cambio que crece con la deuda.
+El detalle de cada una (evidencia, fuente, plan, cuándo no usarla) está en [`docs/metodologias.md`](docs/metodologias.md).
+
+**Las pruebas codifican la evidencia.** Los números del modelo son ilustrativos, pero las comparaciones que sostiene la investigación son pruebas que fallan si alguien las contradice: recuperar retiene más que releer (Roediger y Karpicke, 2006), espaciar vence a concentrar (Cepeda et al., 2006), releer produce la mayor ilusión de fluidez, el fracaso productivo incomoda antes y transfiere después (Kapur, 2008), intercalar mejora la transferencia (Rohrer y Taylor, 2007). Ver `tests/test_metodologias.py`.
 
 ## Estructura
 
 ```
 src/criterio/
-  tiempo/        núcleo compartido: Instante, Fase, LineaDeTiempo, Protagonista
-  decisiones/    Propuesta A
-  aprendiz/      Propuesta B
-  codigo/        Propuesta C
-  catalogo/      siete lecciones (Value Object, TDD, Repositorio, Agregado, ...)
-  web/           exporta las trayectorias a JSON para el sitio
-  cli.py         aprender desde la terminal
-site/            sitio estático (HTML, CSS, JS sin dependencias)
-tests/           pruebas escritas antes que el código
+  tiempo/         núcleo compartido: Instante, Fase, LineaDeTiempo, Protagonista
+  metodologias/   el conocimiento como protagonista y las 19 metodologías
+  decisiones/     Propuesta A: una decisión técnica como protagonista
+  aprendiz/       Propuesta B: quien aprende como protagonista
+  codigo/         Propuesta C: un módulo y su costo de cambio
+  catalogo/       siete lecciones de Python y DDD (cliente de A)
+  web/            exporta las trayectorias a web/src/data/criterio.json
+  cli.py          aprender desde la terminal
+web/              app construida sobre aurora-ui (TanStack Start, prerender estático)
+tests/            pruebas escritas antes que el código
+docs/             metodologías y propuestas
 ```
 
 ## Uso
@@ -51,26 +56,29 @@ tests/           pruebas escritas antes que el código
 pip install -e ".[dev]"
 pytest
 
+criterio metodos
+criterio metodo fracaso-productivo --t -1
+criterio combinar espaciada feynman premortem --t 30
 criterio lecciones
-criterio leccion value-object --camino float --t 4
-criterio simular sin-pruebas
-criterio exportar site/data.json
+criterio exportar            # regenera web/src/data/criterio.json
 ```
 
-## Sitio
-
-El sitio no recalcula las lecciones: muestra las trayectorias que proyecta el dominio en Python (`criterio exportar`). Para verlo en local:
+Web:
 
 ```bash
-criterio exportar site/data.json
-python -m http.server -d site 8000
+cd web
+npm ci
+npm test          # el port TypeScript del modelo da los mismos números que Python
+npm run build     # dist/client: sitio estático
 ```
 
-Despliegue en Cloudflare Pages (proyecto `criterio`, dominio `criterio.benjacode.com`):
+## Despliegue
+
+Cloudflare Pages, proyecto `criterio`, dominio `criterio.benjacode.com`:
 
 ```bash
-criterio exportar site/data.json
-CLOUDFLARE_API_TOKEN=... CLOUDFLARE_ACCOUNT_ID=... npx wrangler pages deploy site --project-name criterio --branch main
+cd web && npm run build
+npx wrangler pages deploy dist/client --project-name criterio --branch main
 ```
 
 El workflow `.github/workflows/deploy.yml` hace lo mismo en cada push a `main` si el repositorio tiene los secretos `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ACCOUNT_ID`.

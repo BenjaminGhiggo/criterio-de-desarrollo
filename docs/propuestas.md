@@ -1,6 +1,8 @@
 # Propuestas de protagonista
 
-Las tres propuestas comparten el mismo núcleo (`criterio.tiempo`) y el mismo lenguaje ubicuo sobre el tiempo. Difieren en **quién** es el protagonista y en **qué** se mide.
+Todas las propuestas comparten el mismo núcleo (`criterio.tiempo`) y el mismo lenguaje ubicuo sobre el tiempo. Difieren en **quién** es el protagonista y en **qué** se mide.
+
+La propuesta principal es la del **Conocimiento** (`criterio.metodologias`): el protagonista es tu conocimiento de un concepto y cada metodología de aprendizaje es un plan en el tiempo. Está documentada en [`metodologias.md`](metodologias.md). Las propuestas A, B y C de abajo fueron las primeras y siguen vivas: A alimenta la demo de pre-mortem, B inspira la valoración de cada metodología y C muestra el costo de cambio en la página de fundamentos.
 
 ## Núcleo compartido
 
@@ -55,7 +57,7 @@ Puntos: acertar y justificar `+10`; equivocarse justificando `+4`; acertar sin j
 
 ## Cómo se combinan
 
-El sitio usa A para el laboratorio de lecciones, C para la simulación del costo de cambio y B para el recorrido personal de quien visita. Cada contexto es independiente (no importa a los otros) salvo el catálogo, que es cliente de A, y la capa web, que solo lee.
+El sitio usa el Conocimiento para comparar y combinar metodologías, A para la demo de pre-mortem y post-mortem, C para la simulación del costo de cambio y B como base de la valoración personal. Cada contexto es independiente (no importa a los otros) salvo el catálogo, que es cliente de A, y la capa web, que solo lee.
 
 ## Ideas para seguir
 

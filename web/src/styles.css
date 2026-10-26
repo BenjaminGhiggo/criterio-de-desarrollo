@@ -1,0 +1,169 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-display: var(--ds-font-display);
+  --font-sans: var(--ds-font-body);
+  --font-mono: var(--ds-font-mono);
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 2rem;
+  --radius-xl: 3rem;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+  --color-panel: var(--panel);
+  --color-panel-foreground: var(--panel-foreground);
+  --color-antes: var(--t-antes);
+  --color-cero: var(--t-cero);
+  --color-despues: var(--t-despues);
+}
+
+:root {
+  --ds-font-display: "Space Grotesk", system-ui, -apple-system, sans-serif;
+  --ds-font-body: "DM Sans", system-ui, -apple-system, sans-serif;
+  --ds-font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+  --ds-primary: oklch(0.49 0.29 293);
+  --ds-secondary: oklch(0.51 0.23 282);
+  --ds-accent: oklch(0.82 0.16 181);
+  --ds-highlight: oklch(0.82 0.12 298);
+  --background: oklch(0.985 0.004 286);
+  --foreground: oklch(0.22 0.035 269);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--foreground);
+  --popover: var(--card);
+  --popover-foreground: var(--foreground);
+  --primary: var(--ds-primary);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.96 0.012 286);
+  --secondary-foreground: var(--foreground);
+  --muted: oklch(0.965 0.008 286);
+  --muted-foreground: oklch(0.52 0.025 270);
+  --accent: var(--ds-accent);
+  --accent-foreground: oklch(0.22 0.035 269);
+  --destructive: oklch(0.64 0.22 19);
+  --destructive-foreground: oklch(1 0 0);
+  --success: oklch(0.7 0.17 162);
+  --warning: oklch(0.76 0.17 70);
+  --info: var(--ds-secondary);
+  --border: oklch(0.91 0.01 286);
+  --input: oklch(0.94 0.008 286);
+  --ring: var(--ds-highlight);
+  --panel: color-mix(in oklab, var(--ds-primary) 24%, oklch(0 0 0));
+  --panel-foreground: oklch(0.98 0.005 286);
+  --shadow-soft: 0 8px 32px color-mix(in oklab, var(--ds-primary) 5%, transparent);
+  --shadow-card: 0 2px 12px color-mix(in oklab, var(--foreground) 5%, transparent);
+  --shadow-glow: 0 12px 30px color-mix(in oklab, var(--primary) 28%, transparent);
+  /* Fases del tiempo: t<0 turquesa (preparación), t=0 ámbar (encuentro), t>0 violeta (consolidación). */
+  --t-antes: oklch(0.66 0.13 181);
+  --t-cero: oklch(0.72 0.16 65);
+  --t-despues: var(--ds-primary);
+}
+
+@layer base {
+  * { border-color: var(--border); }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--background); color: var(--foreground); font-family: var(--ds-font-body); }
+  h1, h2, h3, h4 { font-family: var(--ds-font-display); }
+  button, a, input, select { outline-color: var(--ring); }
+  button { font-family: var(--ds-font-display); }
+  ::selection { background: color-mix(in oklab, var(--primary) 20%, transparent); }
+}
+
+@keyframes bar-rise { from { transform: scaleY(.08); opacity: .2; } to { transform: scaleY(1); opacity: 1; } }
+@keyframes float-in { from { transform: translateY(18px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes draw-line { from { stroke-dasharray: 1; stroke-dashoffset: 1; } to { stroke-dasharray: 1; stroke-dashoffset: 0; } }
+@keyframes dot-in { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes fill-right { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes status-ring { 0% { box-shadow: 0 0 0 0 color-mix(in oklab, currentColor 30%, transparent); } 100% { box-shadow: 0 0 0 8px transparent; } }
+@keyframes flow-right { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes donut-in { from { stroke-dashoffset: 100; opacity: 0; } to { opacity: 1; } }
+@keyframes radar-in { from { transform: scale(.15); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes tracer-glow { 0%, 100% { opacity: .45; filter: drop-shadow(0 0 2px var(--accent)); } 50% { opacity: 1; filter: drop-shadow(0 0 7px var(--accent)); } }
+@keyframes stream-across { from { transform: translateX(-110%); } to { transform: translateX(310%); } }
+@keyframes node-breathe { 0%, 100% { transform: scale(1); opacity: .72; } 50% { transform: scale(1.14); opacity: 1; } }
+@keyframes live-bars { 0%, 100% { transform: scaleY(.72); } 50% { transform: scaleY(1); } }
+@keyframes scan-down { 0% { transform: translateY(-100%); opacity: 0; } 15%, 75% { opacity: .55; } 100% { transform: translateY(900%); opacity: 0; } }
+@keyframes funnel-arrive { from { transform: scaleX(.25); opacity: .2; } to { transform: scaleX(1); opacity: 1; } }
+@keyframes dash-travel { to { stroke-dashoffset: -12; } }
+
+@utility animate-bar { transform-origin: bottom; animation: bar-rise 600ms ease both; }
+@utility animate-float { animation: float-in 500ms ease both; }
+@utility shadow-soft { box-shadow: var(--shadow-soft); }
+@utility shadow-card { box-shadow: var(--shadow-card); }
+@utility shadow-glow { box-shadow: var(--shadow-glow); }
+@utility chart-line { animation: draw-line 900ms ease both; }
+@utility chart-dot { transform-origin: center; transform-box: fill-box; animation: dot-in 300ms ease both; }
+@utility metric-fill { transform-origin: left; animation: fill-right 700ms ease both; }
+@utility status-pulse { animation: status-ring 1.5s ease-out 2; }
+@utility flow-line { transform-origin: left; animation: flow-right 1.2s ease both; }
+@utility donut-segment { animation: donut-in 700ms ease both; }
+@utility radar-shape { transform-box: fill-box; transform-origin: center; animation: radar-in 500ms ease both; }
+
+.live-tracer { animation: tracer-glow 1.2s ease-in-out infinite; }
+.radar-orbit { filter: drop-shadow(0 0 5px var(--accent)); }
+
+/* ── Scroll reveal (fires as sections enter the viewport) ── */
+.reveal { opacity: 0; transform: translateY(26px); transition: opacity .75s cubic-bezier(.22,.7,.2,1), transform .75s cubic-bezier(.22,.7,.2,1); will-change: opacity, transform; }
+.reveal.is-visible { opacity: 1; transform: none; }
+
+/* ── Ambient, always-on motion (no interaction needed) ── */
+@keyframes aurora-drift { 0% { transform: translate(0,0) scale(1); } 33% { transform: translate(7%,-5%) scale(1.14); } 66% { transform: translate(-6%,6%) scale(.94); } 100% { transform: translate(0,0) scale(1); } }
+@keyframes soft-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+@keyframes text-sheen { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+@keyframes bar-sheen { 0% { transform: translateX(-140%); } 100% { transform: translateX(360%); } }
+@keyframes ring-forever { 0% { box-shadow: 0 0 0 0 color-mix(in oklab, currentColor 35%, transparent); } 70%,100% { box-shadow: 0 0 0 9px transparent; } }
+
+.aurora { position: absolute; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0; }
+.aurora-1 { animation: aurora-drift 19s ease-in-out infinite; }
+.aurora-2 { animation: aurora-drift 24s ease-in-out infinite reverse; }
+.live-dot { animation: ring-forever 1.9s ease-out infinite; }
+.float-slow { animation: soft-float 6.5s ease-in-out infinite; }
+.sheen-text { background: linear-gradient(100deg, var(--primary) 25%, var(--accent) 50%, var(--primary) 75%); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; animation: text-sheen 6s linear infinite; }
+.bar-shimmer { position: relative; overflow: hidden; }
+.bar-shimmer::after { content: ""; position: absolute; inset: 0; width: 45%; background: linear-gradient(90deg, transparent, color-mix(in oklab, white 55%, transparent), transparent); animation: bar-sheen 2.8s ease-in-out infinite; }
+.flow-stream { animation: stream-across 2.4s ease-in-out infinite; }
+.node-breathe { transform-box: fill-box; transform-origin: center; animation: node-breathe 2.2s ease-in-out infinite; }
+.architecture-path { animation: dash-travel 1.4s linear infinite; }
+.live-bar { transform-origin: bottom; animation: live-bars 2.6s ease-in-out infinite; }
+.live-scan { position: absolute; inset-inline: 0; top: 0; height: 12%; pointer-events: none; background: linear-gradient(to bottom, transparent, color-mix(in oklab, var(--accent) 14%, transparent), transparent); animation: scan-down 5s linear infinite; }
+.funnel-step { transform-origin: center; animation: funnel-arrive 650ms ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+  .sheen-text { -webkit-text-fill-color: var(--primary); color: var(--primary); }
+}
+/* ── Criterio: piezas propias sobre el sistema aurora ── */
+.eje-gradiente { background: linear-gradient(90deg, transparent, var(--t-antes) 42%, var(--t-cero) 50%, var(--t-despues) 58%, transparent); }
+.codigo { font-family: var(--ds-font-mono); font-size: 13px; line-height: 1.7; tab-size: 4; }
+.codigo .kw { color: color-mix(in oklab, var(--ds-highlight) 90%, white); }
+.codigo .co { color: color-mix(in oklab, var(--panel-foreground) 45%, transparent); font-style: italic; }
+.codigo .st { color: var(--ds-accent); }
+@keyframes marcador-pulso { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, currentColor 40%, transparent); } 50% { box-shadow: 0 0 0 10px transparent; } }
+.marcador-vivo { animation: marcador-pulso 2.4s ease-in-out infinite; }
+@keyframes aparecer { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.aparecer { animation: aparecer .45s cubic-bezier(.22,.7,.2,1) both; }
+input[type="range"].rango { accent-color: var(--primary); width: 100%; }

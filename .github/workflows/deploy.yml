@@ -15,8 +15,15 @@ jobs:
           python-version: "3.13"
       - run: pip install -e ".[dev]"
       - run: pytest
-      - run: criterio exportar site/data.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci && npm test && npm run build
+        working-directory: web
       - name: Publicar en Cloudflare Pages
+        working-directory: web
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -25,4 +32,4 @@ jobs:
             echo "Sin secreto CLOUDFLARE_API_TOKEN; se omite el despliegue."
             exit 0
           fi
-          npx --yes wrangler@3 pages deploy site --project-name criterio --branch main
+          npx --yes wrangler@3 pages deploy dist/client --project-name criterio --branch main
