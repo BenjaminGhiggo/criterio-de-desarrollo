@@ -547,3 +547,27 @@ export function Valoracion({ id, nombre }: { id: string; nombre: string }) {
     </section>
   );
 }
+
+export function PaginaNoEncontrada() {
+  return (
+    <main className="flex min-h-[60vh] items-center justify-center px-4">
+      <div className="max-w-md text-center">
+        <p className="font-mono text-sm font-bold text-primary">t = ?</p>
+        <h1 className="mt-2 font-display text-5xl font-bold text-foreground">
+          Este instante no existe
+        </h1>
+        <p className="mt-3 text-muted-foreground">
+          La página que buscas no está en ninguna fase del tiempo.
+        </p>
+        <div className="mt-6">
+          <Link
+            to="/"
+            className="inline-flex h-11 items-center justify-center rounded-full bg-primary px-5 font-display text-sm font-semibold text-primary-foreground"
+          >
+            Volver a las metodologías
+          </Link>
+        </div>
+      </div>
+    </main>
+  );
+}

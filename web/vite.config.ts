@@ -13,6 +13,10 @@ export default defineConfig({
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     server: { entry: "server" },
-    prerender: { enabled: true, crawlLinks: true, failOnError: true },
+    // Sin subcarpetas: /comparar se escribe como comparar.html y Cloudflare Pages
+    // lo sirve en /comparar sin redirigir a /comparar/.
+    prerender: { enabled: true, crawlLinks: true, failOnError: true, autoSubfolderIndex: false },
+    // /404 se escribe como 404.html: Pages lo usa (con estado 404) para rutas inexistentes.
+    pages: [{ path: "/404" }],
   },
 });

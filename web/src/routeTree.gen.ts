@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as R404RouteImport } from './routes/404'
 import { Route as CompararRouteImport } from './routes/comparar'
 import { Route as FundamentosRouteImport } from './routes/fundamentos'
 import { Route as MiMetodologiaRouteImport } from './routes/mi-metodologia'
@@ -18,6 +19,11 @@ import { Route as MetodosIdRouteImport } from './routes/metodos.$id'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const R404Route = R404RouteImport.update({
+  id: '/404',
+  path: '/404',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CompararRoute = CompararRouteImport.update({
@@ -43,6 +49,7 @@ const MetodosIdRoute = MetodosIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/404': typeof R404Route
   '/comparar': typeof CompararRoute
   '/fundamentos': typeof FundamentosRoute
   '/mi-metodologia': typeof MiMetodologiaRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/404': typeof R404Route
   '/comparar': typeof CompararRoute
   '/fundamentos': typeof FundamentosRoute
   '/mi-metodologia': typeof MiMetodologiaRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/404': typeof R404Route
   '/comparar': typeof CompararRoute
   '/fundamentos': typeof FundamentosRoute
   '/mi-metodologia': typeof MiMetodologiaRoute
@@ -66,12 +75,24 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/comparar' | '/fundamentos' | '/mi-metodologia' | '/metodos/$id'
+    | '/'
+    | '/404'
+    | '/comparar'
+    | '/fundamentos'
+    | '/mi-metodologia'
+    | '/metodos/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/comparar' | '/fundamentos' | '/mi-metodologia' | '/metodos/$id'
+  to:
+    | '/'
+    | '/404'
+    | '/comparar'
+    | '/fundamentos'
+    | '/mi-metodologia'
+    | '/metodos/$id'
   id:
     | '__root__'
     | '/'
+    | '/404'
     | '/comparar'
     | '/fundamentos'
     | '/mi-metodologia'
@@ -80,6 +101,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  R404Route: typeof R404Route
   CompararRoute: typeof CompararRoute
   FundamentosRoute: typeof FundamentosRoute
   MiMetodologiaRoute: typeof MiMetodologiaRoute
@@ -93,6 +115,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/404': {
+      id: '/404'
+      path: '/404'
+      fullPath: '/404'
+      preLoaderRoute: typeof R404RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/comparar': {
@@ -128,6 +157,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  R404Route: R404Route,
   CompararRoute: CompararRoute,
   FundamentosRoute: FundamentosRoute,
   MiMetodologiaRoute: MiMetodologiaRoute,
